@@ -416,20 +416,24 @@ document.addEventListener('DOMContentLoaded', () => {
       isDragging = true;
       lastMouseX = e.clientX;
       lastMouseY = e.clientY;
+      velX = 0;
+      velY = 0;
     });
     window.addEventListener('mousemove', (e) => {
       if (!isDragging) return;
       const dx = e.clientX - lastMouseX;
       const dy = e.clientY - lastMouseY;
-      rotY += dx * 0.006;
-      rotX += dy * 0.006;
-      rotX = Math.max(-0.8, Math.min(0.8, rotX));
-      velX = dy * 0.002;
-      velY = dx * 0.002;
+      rotY += dx * 0.007;
+      rotX += dy * 0.007;
+      rotX = Math.max(-0.9, Math.min(0.9, rotX));
+      velX = dy * 0.0025;
+      velY = dx * 0.0025;
       lastMouseX = e.clientX;
       lastMouseY = e.clientY;
     });
     window.addEventListener('mouseup', () => { isDragging = false; });
+    window.addEventListener('mouseleave', () => { isDragging = false; });
+    window.addEventListener('blur', () => { isDragging = false; });
 
     // Touch support
     canvas.addEventListener('touchstart', (e) => {
@@ -437,21 +441,24 @@ document.addEventListener('DOMContentLoaded', () => {
         isDragging = true;
         lastMouseX = e.touches[0].clientX;
         lastMouseY = e.touches[0].clientY;
+        velX = 0;
+        velY = 0;
       }
     }, { passive: true });
     window.addEventListener('touchmove', (e) => {
       if (!isDragging || e.touches.length !== 1) return;
       const dx = e.touches[0].clientX - lastMouseX;
       const dy = e.touches[0].clientY - lastMouseY;
-      rotY += dx * 0.006;
-      rotX += dy * 0.006;
-      rotX = Math.max(-0.8, Math.min(0.8, rotX));
-      velX = dy * 0.002;
-      velY = dx * 0.002;
+      rotY += dx * 0.007;
+      rotX += dy * 0.007;
+      rotX = Math.max(-0.9, Math.min(0.9, rotX));
+      velX = dy * 0.0025;
+      velY = dx * 0.0025;
       lastMouseX = e.touches[0].clientX;
       lastMouseY = e.touches[0].clientY;
     }, { passive: true });
     window.addEventListener('touchend', () => { isDragging = false; });
+    window.addEventListener('touchcancel', () => { isDragging = false; });
 
     // 3D Math Projection
     function project(x, y, z) {
@@ -554,10 +561,12 @@ document.addEventListener('DOMContentLoaded', () => {
       time += 0.02;
 
       if (!isDragging) {
-        velY = velY * 0.96 + 0.0035 * 0.04;
-        velX *= 0.94;
+        velY = velY * 0.95 + 0.0038 * 0.05;
+        velX *= 0.92;
         rotY += velY;
         rotX += velX;
+        // Softly re-center vertical tilt toward natural viewing angle
+        rotX += (0.22 - rotX) * 0.015;
       }
 
       ctx.clearRect(0, 0, width, height);

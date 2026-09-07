@@ -1468,6 +1468,9 @@ section {
   height: 100%;
   display: block;
   cursor: grab;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .naragro-globe-wrapper canvas:active {
