@@ -114,16 +114,16 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Initiate glightbox
    */
-  const glightbox = GLightbox({
+  const glightbox = (typeof GLightbox !== 'undefined') ? GLightbox({
     selector: '.glightbox'
-  });
+  }) : null;
 
   /**
    * Porfolio isotope and filter
    */
   let portfolionIsotope = document.querySelector('.portfolio-isotope');
 
-  if (portfolionIsotope) {
+  if (portfolionIsotope && typeof Isotope !== 'undefined') {
 
     let portfolioFilter = portfolionIsotope.getAttribute('data-portfolio-filter') ? portfolionIsotope.getAttribute('data-portfolio-filter') : '*';
     let portfolioLayout = portfolionIsotope.getAttribute('data-portfolio-layout') ? portfolionIsotope.getAttribute('data-portfolio-layout') : 'masonry';
@@ -158,99 +158,114 @@ document.addEventListener('DOMContentLoaded', () => {
   /**
    * Init swiper slider with 1 slide at once in desktop view
    */
-  new Swiper('.slides-1', {
-    speed: 600,
-    loop: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false
-    },
-    slidesPerView: 'auto',
-    pagination: {
-      el: '.swiper-pagination',
-      type: 'bullets',
-      clickable: true
-    },
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    }
-  });
-
-  /**
-   * Init swiper slider with 2 slides at once in desktop view
-   */
-  new Swiper('.slides-2', {
-    speed: 600,
-    loop: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false
-    },
-    slidesPerView: 'auto',
-    pagination: {
-      el: '.swiper-pagination',
-      type: 'bullets',
-      clickable: true
-    },
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-    breakpoints: {
-      320: {
-        slidesPerView: 1,
-        spaceBetween: 20
+  if (typeof Swiper !== 'undefined') {
+    new Swiper('.slides-1', {
+      speed: 600,
+      loop: true,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false
       },
+      slidesPerView: 'auto',
+      pagination: {
+        el: '.swiper-pagination',
+        type: 'bullets',
+        clickable: true
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      }
+    });
 
-      1200: {
-        slidesPerView: 2,
-        spaceBetween: 20
+    /**
+     * Init swiper slider with 2 slides at once in desktop view
+     */
+    new Swiper('.slides-2', {
+      speed: 600,
+      loop: true,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false
+      },
+      slidesPerView: 'auto',
+      pagination: {
+        el: '.swiper-pagination',
+        type: 'bullets',
+        clickable: true
+      },
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      breakpoints: {
+        320: {
+          slidesPerView: 1,
+          spaceBetween: 20
+        },
+
+        1200: {
+          slidesPerView: 2,
+          spaceBetween: 20
+        }
+      }
+    });
+  }
+
+  /* extra */
+  window.addEventListener("resize", function(event) {
+    let headerEl = document.getElementById("header");
+    if (headerEl && headerEl.children[0] && headerEl.children[0].children[0] && headerEl.children[0].children[0].children[0]) {
+      let logo = headerEl.children[0].children[0].children[0];
+      if (logo && logo.width) {
+        logo.style.left = ((window.innerWidth - logo.width) / 2) + "px";
       }
     }
   });
 
-  /*
-  let navbar = document.getElementById("header");
-  window.onscroll = function() {
-    let brcY = document.getElementsByClassName("breadcrumbs")[0].scrollHeight;
-    if (window.scrollY >= brcY) {
-      if (!navbar.classList.contains("active-fixed"))
-        navbar.classList.add("active-fixed")
-    } else {
-      if (navbar.classList.contains("active-fixed"))
-        navbar.classList.remove("active-fixed")
-    }
-  };*/
-
-  /* extra */
-  window.addEventListener("resize", function(event) {
-    let logo = document.getElementById("header").children[0].children[0].children[0];
-    logo.style.left = ((window.innerWidth - logo.width) / 2) + "px";
-    console.log((window.innerWidth - logo.width) / 2);
-  })
-
   function switchFixed() {
-    document.getElementById("demo").innerHTML = "You scrolled in div.";
+    let demo = document.getElementById("demo");
+    if (demo) demo.innerHTML = "You scrolled in div.";
   }
-
 
   /**
    * Initiate pURE cOUNTER
    */
-  new PureCounter();
+  if (typeof PureCounter !== 'undefined') {
+    new PureCounter();
+  }
 
   /**
    * Animation on scroll function and init
    */
   function aos_init() {
-    AOS.init({
-      duration: 800,
-      easing: 'slide',
-      once: true,
-      mirror: false
-    });
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 800,
+        easing: 'slide',
+        once: true,
+        mirror: false
+      });
+    }
   }
+
+  // Initialize AOS immediately on DOM ready
+  aos_init();
+
+  // Also refresh AOS on window load and shortly after to ensure elements are visible
+  window.addEventListener('load', () => {
+    aos_init();
+    if (typeof AOS !== 'undefined') {
+      AOS.refresh();
+    }
+  });
+
+  setTimeout(() => {
+    if (typeof AOS !== 'undefined') AOS.refresh();
+  }, 350);
+  setTimeout(() => {
+    if (typeof AOS !== 'undefined') AOS.refresh();
+  }, 1000);
   /**
    * What We Do Interactive
    */
@@ -349,7 +364,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
     let width = 0, height = 0, cx = 0, cy = 0, radius = 0;
+    let rotX = 0.25;
+    let rotY = 0;
+    let velX = 0;
+    let velY = 0.0035;
+    let isDragging = false;
+    let lastMouseX = 0;
+    let lastMouseY = 0;
 
     function resize() {
       const parent = canvas.parentElement;
@@ -808,10 +832,15 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
   }
 
-  initNaragroGlobe();
+  try {
+    initNaragroGlobe();
+  } catch (err) {
+    console.error('Naragro Globe init error:', err);
+  }
 
-  window.addEventListener('load', () => {
+  // Final AOS safety initialization
+  if (typeof aos_init === 'function') {
     aos_init();
-  });
+  }
 
 });
