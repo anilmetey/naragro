@@ -392,8 +392,8 @@ document.addEventListener('DOMContentLoaded', () => {
       canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cx = width / 2;
-      cy = height / 2 + 8;
-      radius = Math.max(90, Math.min(width, height) * 0.36);
+      cy = Math.round(height * 0.38 + 6);
+      radius = Math.max(78, Math.min(width * 0.38, height * 0.31));
       return true;
     }
 
@@ -588,16 +588,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Atmosphere glow in brand gold (#feb900) & wine (#762638)
-      const radGlow = ctx.createRadialGradient(cx, cy, radius * 0.2, cx, cy, radius * 1.45);
-      radGlow.addColorStop(0, 'rgba(118, 38, 56, 0.20)');
-      radGlow.addColorStop(0.5, 'rgba(254, 185, 0, 0.12)');
-      radGlow.addColorStop(0.8, 'rgba(189, 106, 75, 0.05)');
+      // Multi-layer Atmosphere glow in brand gold (#feb900) & wine (#762638)
+      const radGlow = ctx.createRadialGradient(cx, cy, radius * 0.2, cx, cy, radius * 1.5);
+      radGlow.addColorStop(0, 'rgba(118, 38, 56, 0.22)');
+      radGlow.addColorStop(0.45, 'rgba(254, 185, 0, 0.15)');
+      radGlow.addColorStop(0.75, 'rgba(189, 106, 75, 0.06)');
       radGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
       ctx.fillStyle = radGlow;
       ctx.beginPath();
-      ctx.arc(cx, cy, radius * 1.45, 0, Math.PI * 2);
+      ctx.arc(cx, cy, radius * 1.5, 0, Math.PI * 2);
       ctx.fill();
+
+      // 3D Floor Shadow & Ground Glow under the globe
+      ctx.save();
+      const floorY = cy + radius + 15;
+      const floorGrad = ctx.createRadialGradient(cx, floorY, 0, cx, floorY, radius * 0.88);
+      floorGrad.addColorStop(0, 'rgba(118, 38, 56, 0.32)');
+      floorGrad.addColorStop(0.35, 'rgba(254, 185, 0, 0.20)');
+      floorGrad.addColorStop(0.7, 'rgba(189, 106, 75, 0.06)');
+      floorGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = floorGrad;
+      ctx.beginPath();
+      ctx.ellipse(cx, floorY, radius * 0.82, radius * 0.16, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
 
       // Sphere base: Deep enterprise twilight globe with 3D spherical lighting
       const sphereGrad = ctx.createRadialGradient(
@@ -798,18 +812,21 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.stroke();
           ctx.setLineDash([]);
 
-          const photonT = (time * 0.6 + idx * 0.23) % 1;
-          const photonIdx = Math.floor(photonT * steps);
-          const photonPt = arc2D[photonIdx];
-          if (photonPt && photonPt.z > 0) {
-            ctx.beginPath();
-            ctx.arc(photonPt.x, photonPt.y, 3.5 * photonPt.scale, 0, Math.PI * 2);
-            ctx.fillStyle = '#ffffff';
-            ctx.shadowColor = '#feb900';
-            ctx.shadowBlur = 10;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-          }
+          // Staggered dual photons per route for living global flow
+          [0, 0.5].forEach((offset) => {
+            const photonT = (time * 0.55 + idx * 0.19 + offset) % 1;
+            const photonIdx = Math.floor(photonT * steps);
+            const photonPt = arc2D[photonIdx];
+            if (photonPt && photonPt.z > -10) {
+              ctx.beginPath();
+              ctx.arc(photonPt.x, photonPt.y, (offset === 0 ? 3.6 : 2.5) * photonPt.scale, 0, Math.PI * 2);
+              ctx.fillStyle = '#ffffff';
+              ctx.shadowColor = '#feb900';
+              ctx.shadowBlur = offset === 0 ? 12 : 6;
+              ctx.fill();
+              ctx.shadowBlur = 0;
+            }
+          });
         }
       });
 
@@ -822,12 +839,15 @@ document.addEventListener('DOMContentLoaded', () => {
           const isHQ = hub.isHQ;
 
           if (isHQ) {
-            const pulseR = 8 + (Math.sin(time * 3) + 1) * 7;
-            ctx.beginPath();
-            ctx.arc(p2d.x, p2d.y, pulseR * p2d.scale, 0, Math.PI * 2);
-            ctx.strokeStyle = `rgba(254, 185, 0, ${0.9 - pulseR / 24})`;
-            ctx.lineWidth = 1.8;
-            ctx.stroke();
+            [0, 0.5].forEach(wOff => {
+              const pulseT = (time * 2.0 + wOff) % 1;
+              const pulseR = 5 + pulseT * 22;
+              ctx.beginPath();
+              ctx.arc(p2d.x, p2d.y, pulseR * p2d.scale, 0, Math.PI * 2);
+              ctx.strokeStyle = `rgba(254, 185, 0, ${0.85 * (1 - pulseT)})`;
+              ctx.lineWidth = 1.6;
+              ctx.stroke();
+            });
           }
 
           ctx.beginPath();
@@ -847,7 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Tilted Golden Equator Ring
       ctx.save();
-      const ringTilt = 0.35;
+      const ringTilt = 0.32;
       const ringRadius = radius * 1.28;
       ctx.beginPath();
       for (let a = 0; a <= 360; a += 4) {
@@ -862,6 +882,25 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.strokeStyle = 'rgba(254, 185, 0, 0.5)';
       ctx.lineWidth = 1.6;
       ctx.setLineDash([6, 6]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Secondary Armillary Ring in subtle copper
+      const ringTilt2 = -0.28;
+      const ringRadius2 = radius * 1.34;
+      ctx.beginPath();
+      for (let a = 0; a <= 360; a += 4) {
+        const rad = (a * Math.PI) / 180;
+        const rx = ringRadius2 * Math.cos(rad);
+        const ry = ringRadius2 * Math.sin(rad) * Math.sin(ringTilt2);
+        const rz = ringRadius2 * Math.sin(rad) * Math.cos(ringTilt2);
+        const rp = project(rx, ry, rz);
+        if (a === 0) ctx.moveTo(rp.x, rp.y);
+        else ctx.lineTo(rp.x, rp.y);
+      }
+      ctx.strokeStyle = 'rgba(189, 106, 75, 0.3)';
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([4, 8]);
       ctx.stroke();
       ctx.setLineDash([]);
       ctx.restore();
