@@ -516,39 +516,56 @@ document.addEventListener('DOMContentLoaded', () => {
       { from: 5, to: 9 }
     ];
 
-    // Surface seed particles (pomegranate seeds on landmass clusters)
-    const seedPoints = [];
-    const continents = [
-      { latMin: 35, latMax: 60, lonMin: -10, lonMax: 45, density: 90 },
-      { latMin: 15, latMax: 50, lonMin: 40, lonMax: 125, density: 140 },
-      { latMin: -10, latMax: 20, lonMin: 95, lonMax: 140, density: 70 },
-      { latMin: 25, latMax: 55, lonMin: -125, lonMax: -70, density: 110 },
-      { latMin: -35, latMax: 10, lonMin: -75, lonMax: -35, density: 90 },
-      { latMin: -30, latMax: 35, lonMin: -15, lonMax: 50, density: 80 }
+    const emblemImg = new Image();
+    emblemImg.src = 'assets/img/naragro-emblem.png';
+
+    // Continental Landmass Grid (Europe, Middle East, Asia, Africa, Americas, Oceania)
+    const landRegions = [
+      // Europe & Mediterranean
+      { lat: [50, 58], lon: [-8, 2], count: 14 },
+      { lat: [36, 54], lon: [-9, 16], count: 32 },
+      { lat: [56, 68], lon: [6, 26], count: 18 },
+      { lat: [45, 60], lon: [16, 38], count: 28 },
+      { lat: [36, 42], lon: [26, 44], count: 22 }, // Turkey & Mediterranean
+      // Middle East & Central Asia
+      { lat: [20, 36], lon: [38, 58], count: 24 },
+      { lat: [40, 52], lon: [50, 80], count: 22 },
+      // Asia
+      { lat: [8, 30], lon: [70, 88], count: 30 },
+      { lat: [22, 42], lon: [100, 122], count: 38 },
+      { lat: [32, 42], lon: [132, 142], count: 12 },
+      { lat: [-6, 18], lon: [98, 120], count: 26 },
+      { lat: [54, 66], lon: [60, 135], count: 35 },
+      // Africa
+      { lat: [18, 35], lon: [-10, 34], count: 30 },
+      { lat: [4, 16], lon: [-15, 8], count: 20 },
+      { lat: [-10, 14], lon: [28, 44], count: 22 },
+      { lat: [-34, -12], lon: [16, 34], count: 22 },
+      // North America
+      { lat: [28, 48], lon: [-92, -68], count: 34 },
+      { lat: [32, 50], lon: [-122, -95], count: 30 },
+      { lat: [50, 64], lon: [-120, -65], count: 30 },
+      { lat: [16, 28], lon: [-106, -88], count: 18 },
+      // South America
+      { lat: [0, 11], lon: [-76, -58], count: 16 },
+      { lat: [-24, -2], lon: [-62, -36], count: 34 },
+      { lat: [-50, -25], lon: [-70, -58], count: 20 },
+      // Australia
+      { lat: [-36, -14], lon: [116, 150], count: 26 }
     ];
 
-    continents.forEach(c => {
-      for (let i = 0; i < c.density; i++) {
-        const lat = c.latMin + Math.random() * (c.latMax - c.latMin);
-        const lon = c.lonMin + Math.random() * (c.lonMax - c.lonMin);
-        seedPoints.push({
-          lat,
-          lon,
-          size: 1.4 + Math.random() * 2.2,
-          isRuby: Math.random() > 0.45,
+    const continentPoints = [];
+    landRegions.forEach(reg => {
+      for (let i = 0; i < reg.count; i++) {
+        continentPoints.push({
+          lat: reg.lat[0] + Math.random() * (reg.lat[1] - reg.lat[0]),
+          lon: reg.lon[0] + Math.random() * (reg.lon[1] - reg.lon[0]),
+          size: 1.3 + Math.random() * 2.0,
+          isGold: Math.random() > 0.4,
           phase: Math.random() * Math.PI * 2
         });
       }
     });
-
-    // Pomegranate Calyx Crown at top pole (lat 82° to 90°)
-    const crownPoints = [];
-    const crownPeaks = 5;
-    for (let i = 0; i < crownPeaks; i++) {
-      const angle = (i / crownPeaks) * 360;
-      crownPoints.push({ lat: 88, lon: angle, peak: true });
-      crownPoints.push({ lat: 83, lon: angle + 360 / (crownPeaks * 2), peak: false });
-    }
 
     let time = 0;
     function render() {
@@ -571,18 +588,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
       ctx.clearRect(0, 0, width, height);
 
-      // Atmosphere glow in Logo Pomegranate Wine (#762638) + Amber (#feb900)
+      // Atmosphere glow in brand gold (#feb900) & wine (#762638)
       const radGlow = ctx.createRadialGradient(cx, cy, radius * 0.2, cx, cy, radius * 1.45);
-      radGlow.addColorStop(0, 'rgba(118, 38, 56, 0.28)');
-      radGlow.addColorStop(0.5, 'rgba(189, 106, 75, 0.12)');
-      radGlow.addColorStop(0.8, 'rgba(254, 185, 0, 0.06)');
+      radGlow.addColorStop(0, 'rgba(118, 38, 56, 0.20)');
+      radGlow.addColorStop(0.5, 'rgba(254, 185, 0, 0.12)');
+      radGlow.addColorStop(0.8, 'rgba(189, 106, 75, 0.05)');
       radGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
       ctx.fillStyle = radGlow;
       ctx.beginPath();
       ctx.arc(cx, cy, radius * 1.45, 0, Math.PI * 2);
       ctx.fill();
 
-      // Sphere base: Rich Royal Pomegranate (#762638) with 3D depth lighting
+      // Sphere base: Deep enterprise twilight globe with 3D spherical lighting
       const sphereGrad = ctx.createRadialGradient(
         cx - radius * 0.35,
         cy - radius * 0.35,
@@ -591,18 +608,18 @@ document.addEventListener('DOMContentLoaded', () => {
         cy,
         radius
       );
-      sphereGrad.addColorStop(0, '#99354b');   // warm ruby crest
-      sphereGrad.addColorStop(0.35, '#762638'); // core logo burgundy
-      sphereGrad.addColorStop(0.75, '#561624'); // deep wine
-      sphereGrad.addColorStop(1, '#3b0d18');    // dark rich shadow
+      sphereGrad.addColorStop(0, '#1c2838');    // sleek ocean highlight
+      sphereGrad.addColorStop(0.4, '#111b28');   // deep executive midnight
+      sphereGrad.addColorStop(0.75, '#0c1420');  // deep obsidian
+      sphereGrad.addColorStop(1, '#1a0e14');     // subtle corporate burgundy rim tone
 
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.fillStyle = sphereGrad;
-      ctx.shadowColor = 'rgba(118, 38, 56, 0.35)';
-      ctx.shadowBlur = 32;
-      ctx.shadowOffsetY = 16;
+      ctx.shadowColor = 'rgba(118, 38, 56, 0.3)';
+      ctx.shadowBlur = 30;
+      ctx.shadowOffsetY = 14;
       ctx.fill();
       ctx.restore();
 
@@ -617,7 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
         radius * 0.7
       );
       sheenGrad.addColorStop(0, 'rgba(255, 255, 255, 0.35)');
-      sheenGrad.addColorStop(0.4, 'rgba(254, 185, 0, 0.15)');
+      sheenGrad.addColorStop(0.4, 'rgba(254, 185, 0, 0.12)');
       sheenGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
       ctx.fillStyle = sheenGrad;
       ctx.beginPath();
@@ -625,7 +642,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.fill();
       ctx.restore();
 
-      // Outer rim in warm copper/gold
+      // Outer rim in warm gold
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(254, 185, 0, 0.45)';
@@ -652,8 +669,8 @@ document.addEventListener('DOMContentLoaded', () => {
             started = false;
           }
         }
-        ctx.strokeStyle = lat === 0 ? 'rgba(254, 185, 0, 0.65)' : 'rgba(254, 215, 120, 0.22)';
-        ctx.lineWidth = lat === 0 ? 1.5 : 0.8;
+        ctx.strokeStyle = lat === 0 ? 'rgba(254, 185, 0, 0.55)' : 'rgba(254, 215, 120, 0.18)';
+        ctx.lineWidth = lat === 0 ? 1.4 : 0.8;
         ctx.stroke();
       });
 
@@ -674,38 +691,59 @@ document.addEventListener('DOMContentLoaded', () => {
             started = false;
           }
         }
-        ctx.strokeStyle = (lon % 90 === 0) ? 'rgba(254, 185, 0, 0.45)' : 'rgba(189, 106, 75, 0.25)';
-        ctx.lineWidth = (lon % 90 === 0) ? 1.2 : 0.7;
+        ctx.strokeStyle = (lon % 90 === 0) ? 'rgba(254, 185, 0, 0.4)' : 'rgba(189, 106, 75, 0.2)';
+        ctx.lineWidth = (lon % 90 === 0) ? 1.1 : 0.7;
         ctx.stroke();
       }
       ctx.restore();
 
-      // Pomegranate Calyx Crown at top pole (rich gold with ruby/copper fill)
-      ctx.save();
-      ctx.beginPath();
-      let crownStarted = false;
-      const sortedCrown = [...crownPoints, crownPoints[0]];
-      sortedCrown.forEach(cp => {
-        const p3d = latLonTo3D(cp.lat, cp.lon, radius * 1.05);
-        const p2d = project(p3d.x, p3d.y, p3d.z);
-        if (p2d.z > -radius * 0.5) {
-          if (!crownStarted) {
-            ctx.moveTo(p2d.x, p2d.y);
-            crownStarted = true;
-          } else {
-            ctx.lineTo(p2d.x, p2d.y);
-          }
-        }
-      });
-      ctx.strokeStyle = '#feb900';
-      ctx.lineWidth = 2.4;
-      ctx.fillStyle = 'rgba(189, 106, 75, 0.6)';
-      ctx.stroke();
-      ctx.fill();
-      ctx.restore();
+      // ============================================
+      // Central Naragro Logo Core (Heart of the Globe)
+      // ============================================
+      if (emblemImg.complete && emblemImg.naturalWidth > 0) {
+        ctx.save();
+        const breathe = 1 + Math.sin(time * 2.2) * 0.025;
+        const emblemSize = radius * 0.54 * breathe;
+        const offX = Math.sin(rotY) * 5;
+        const offY = rotX * 5;
+        const lx = cx + offX;
+        const ly = cy + offY;
 
-      // Pomegranate Seed Particle Clusters on Continents
-      seedPoints.forEach(sp => {
+        // Luminous soft white-gold circular backing
+        const aura = ctx.createRadialGradient(lx, ly, emblemSize * 0.15, lx, ly, emblemSize * 0.7);
+        aura.addColorStop(0, 'rgba(255, 255, 255, 0.96)');
+        aura.addColorStop(0.55, 'rgba(254, 248, 238, 0.92)');
+        aura.addColorStop(0.82, 'rgba(254, 185, 0, 0.32)');
+        aura.addColorStop(1, 'rgba(118, 38, 56, 0)');
+
+        ctx.beginPath();
+        ctx.arc(lx, ly, emblemSize * 0.62, 0, Math.PI * 2);
+        ctx.fillStyle = aura;
+        ctx.shadowColor = 'rgba(254, 185, 0, 0.45)';
+        ctx.shadowBlur = 22;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Delicate golden halo boundary ring
+        ctx.beginPath();
+        ctx.arc(lx, ly, emblemSize * 0.52, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(254, 185, 0, 0.6)';
+        ctx.lineWidth = 1.3;
+        ctx.stroke();
+
+        // Draw the crisp logo emblem
+        ctx.drawImage(
+          emblemImg,
+          lx - emblemSize * 0.48,
+          ly - emblemSize * 0.48,
+          emblemSize * 0.96,
+          emblemSize * 0.96
+        );
+        ctx.restore();
+      }
+
+      // Continents Dots
+      continentPoints.forEach(sp => {
         const p3d = latLonTo3D(sp.lat, sp.lon, radius);
         const p2d = project(p3d.x, p3d.y, p3d.z);
         if (p2d.z > -20) {
@@ -713,10 +751,10 @@ document.addEventListener('DOMContentLoaded', () => {
           const pulse = 0.8 + 0.3 * Math.sin(time * 2 + sp.phase);
           ctx.beginPath();
           ctx.arc(p2d.x, p2d.y, sp.size * p2d.scale * pulse, 0, Math.PI * 2);
-          if (sp.isRuby) {
-            ctx.fillStyle = `rgba(189, 106, 75, ${depthAlpha * 0.95})`; // Logo copper #bd6a4b
-          } else {
+          if (sp.isGold) {
             ctx.fillStyle = `rgba(254, 185, 0, ${depthAlpha * 0.95})`;  // Logo gold #feb900
+          } else {
+            ctx.fillStyle = `rgba(245, 247, 250, ${depthAlpha * 0.88})`; // Pearl white
           }
           ctx.fill();
         }
@@ -775,7 +813,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Trade Hubs Pins
+      // Trade Hubs Pins (Clean & prestigious, no text labels)
       hubs.forEach((hub) => {
         const p3d = latLonTo3D(hub.lat, hub.lon, radius);
         const p2d = project(p3d.x, p3d.y, p3d.z);
@@ -793,7 +831,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           ctx.beginPath();
-          ctx.arc(p2d.x, p2d.y, (isHQ ? 6 : 3.8) * p2d.scale, 0, Math.PI * 2);
+          ctx.arc(p2d.x, p2d.y, (isHQ ? 5.5 : 3.8) * p2d.scale, 0, Math.PI * 2);
           ctx.fillStyle = isHQ ? '#feb900' : '#ffffff';
           ctx.shadowColor = isHQ ? '#feb900' : 'rgba(255, 255, 255, 0.8)';
           ctx.shadowBlur = 10;
@@ -801,18 +839,9 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.shadowBlur = 0;
 
           ctx.beginPath();
-          ctx.arc(p2d.x, p2d.y, 2 * p2d.scale, 0, Math.PI * 2);
+          ctx.arc(p2d.x, p2d.y, 1.8 * p2d.scale, 0, Math.PI * 2);
           ctx.fillStyle = '#762638';
           ctx.fill();
-
-          if (isHQ || hub.name === "Singapore" || hub.name === "Rotterdam" || hub.name === "Santos") {
-            ctx.font = `700 ${Math.round(11 * p2d.scale)}px sans-serif`;
-            ctx.fillStyle = isHQ ? '#feb900' : '#ffffff';
-            ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
-            ctx.shadowBlur = 4;
-            ctx.fillText(hub.name, p2d.x + 8, p2d.y + 4);
-            ctx.shadowBlur = 0;
-          }
         }
       });
 
