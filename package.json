@@ -1,0 +1,19 @@
+{
+  "name": "naragro-web",
+  "version": "1.0.0",
+  "description": "Naragro Web Site - Agricultural Commodities Brokerage & Consultancy",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx serve . -l 3000",
+    "start": "npx serve . -l 3000",
+    "serve": "python3 -m http.server 3000"
+  },
+  "keywords": [
+    "naragro",
+    "commodities",
+    "brokerage",
+    "vegoils"
+  ],
+  "author": "",
+  "license": "ISC"
+}
