@@ -33,6 +33,25 @@
 
 <body>
 
+  <div id="preloader">
+    <div class="splash-content">
+      <div class="splash-logo-wrap">
+        <img src="assets/img/naragro-logo-1.png" alt="Naragro" class="splash-logo">
+      </div>
+      <div class="splash-progress-track">
+        <div class="splash-progress-bar"></div>
+      </div>
+      <p class="splash-tagline">Connecting Global Agricultural Supply Chains</p>
+      <div class="splash-info-badges">
+        <span>Vegoils &amp; Fats</span>
+        <span class="splash-dot">&bull;</span>
+        <span>Global Merchandising</span>
+        <span class="splash-dot">&bull;</span>
+        <span>Supply Chain Hub</span>
+      </div>
+    </div>
+  </div>
+
   <!-- ======= Header ======= -->
   <header id="header" class="header d-flex align-items-center">
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
@@ -63,32 +82,67 @@
     <!-- ======= Breadcrumbs ======= -->
    
     <!-- ======= About Section ======= -->
-    <br>
-    <br>
-    <br>
-    <br>
     <section id="about" class="about">
       <div class="container" data-aos="fade-up">
 
-        <div class="row position-relative">
+        <div class="row align-items-center gy-5">
 
-          <div class="col-lg-7 about-img" style="background-image: url(assets/img/breadcrumbs-bg.jpeg);"></div>
-
-          <div class="col-lg-7">
-            <h2>About Us</h2>
+          <div class="col-lg-6" data-aos="fade-right" data-aos-delay="100">
             <div class="our-story">
-              <p>Naragro is an agricultural commodities brokerage and consultancy firm with a focus on the global markets specialized in vegetable oils and fats. Across our global network, we connect producers with consumers and bring greater transparency and trust to supply chain with our rigorous approach to risk management and compliance.</p>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              <br>
-              
+              <div class="about-subtitle">WHO WE ARE</div>
+              <h2>Connecting Global Agricultural Supply Chains</h2>
+              <p class="lead-text">Naragro is an agricultural commodities brokerage and consultancy firm with a focus on global markets, specialized in vegetable oils, fats, and oilseeds.</p>
+              <p class="desc-text">Across our international network, we connect origin producers with end markets, bringing greater transparency, efficiency, and trust to the supply chain with our rigorous approach to risk management and compliance.</p>
 
-              <div class="watch-video d-flex align-items-center position-relative">
-              <br>
-              <br>
+              <div class="about-pillars">
+                <div class="about-pillar-item">
+                  <div class="about-pillar-icon">
+                    <i class="bi bi-globe-americas"></i>
+                  </div>
+                  <div class="about-pillar-text">
+                    <h5>Global Origination &amp; Merchandising</h5>
+                    <p>Linking farm-gate growers and crushers with industrial refiners and consumer markets worldwide.</p>
+                  </div>
+                </div>
+
+                <div class="about-pillar-item">
+                  <div class="about-pillar-icon">
+                    <i class="bi bi-shield-check"></i>
+                  </div>
+                  <div class="about-pillar-text">
+                    <h5>Risk Management &amp; Market Intelligence</h5>
+                    <p>Dynamic hedging, disciplined trade execution, and strict counterparty compliance across international trade routes.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="about-metrics">
+                <div class="about-metric-item">
+                  <h4>12+</h4>
+                  <span>Global Partners</span>
+                </div>
+                <div class="about-metric-item">
+                  <h4>5</h4>
+                  <span>Continents Connected</span>
+                </div>
+                <div class="about-metric-item">
+                  <h4>100%</h4>
+                  <span>Execution Trust</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+            <div class="naragro-globe-wrapper">
+              <div class="globe-badge">
+                <span class="badge-dot"></span>
+                <span>Global Supply Network</span>
+              </div>
+              <canvas id="naragroGlobeCanvas"></canvas>
+              <div class="globe-interactive-hint">
+                <i class="bi bi-arrows-move"></i> Drag to explore global flow
               </div>
             </div>
           </div>
@@ -785,8 +839,6 @@
   <!-- End Footer -->
 
   <a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <div id="preloader"></div>
 
   <!-- Vendor JS Files -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
