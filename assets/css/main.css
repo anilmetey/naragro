@@ -1401,21 +1401,38 @@ section {
 
 .about-subtitle {
   font-family: var(--font-secondary);
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--color-primary);
-  margin-bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: rgba(118, 38, 56, 0.06);
+  border: 1px solid rgba(118, 38, 56, 0.12);
+  border-radius: 99px;
+  margin-bottom: 16px;
+}
+
+.about-subtitle::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #feb900;
+  box-shadow: 0 0 6px #feb900;
 }
 
 .about h2 {
-  font-size: 38px;
+  font-size: 36px;
   font-weight: 700;
   font-family: var(--font-secondary);
   color: #1a2734;
   line-height: 1.25;
   margin-bottom: 22px;
+  letter-spacing: -0.3px;
 }
 
 @media (max-width: 768px) {
@@ -1433,10 +1450,12 @@ section {
 
 .about .lead-text {
   font-size: 16.5px;
-  line-height: 1.65;
-  color: #2c3e50;
+  line-height: 1.7;
+  color: #1e293b;
   font-weight: 500;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
+  padding-left: 18px;
+  border-left: 3px solid #feb900;
 }
 
 .about .desc-text {
@@ -1444,6 +1463,19 @@ section {
   line-height: 1.75;
   color: #64748b;
   margin-bottom: 0;
+  padding-left: 21px;
+}
+
+@media (max-width: 576px) {
+  .about .lead-text {
+    padding-left: 14px;
+    border-left-width: 2.5px;
+    font-size: 15.5px;
+  }
+  .about .desc-text {
+    padding-left: 16.5px;
+    font-size: 14px;
+  }
 }
 
 /* 3D Pomegranate Globe Card */
