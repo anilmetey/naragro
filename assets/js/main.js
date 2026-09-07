@@ -352,39 +352,39 @@ document.addEventListener('DOMContentLoaded', () => {
     let width = 0, height = 0, cx = 0, cy = 0, radius = 0;
 
     function resize() {
+      const parent = canvas.parentElement;
       const rect = canvas.getBoundingClientRect();
+      const parentRect = parent ? parent.getBoundingClientRect() : null;
+      
+      const w = Math.round(rect.width || (parentRect ? parentRect.width : 0) || 540);
+      const h = Math.round(rect.height || (parentRect ? parentRect.height : 0) || 520);
+      
+      if (w <= 10 || h <= 10) return false;
+
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      width = rect.width;
-      height = rect.height;
+      width = w;
+      height = h;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       cx = width / 2;
-      cy = height / 2 + 10;
-      radius = Math.min(width, height) * 0.36;
+      cy = height / 2 + 8;
+      radius = Math.max(90, Math.min(width, height) * 0.36);
+      return true;
     }
 
     resize();
     window.addEventListener('resize', resize);
+    window.addEventListener('load', () => {
+      setTimeout(resize, 100);
+      setTimeout(resize, 500);
+      setTimeout(resize, 1200);
+    });
 
-    // Rotation & Physics
-    let rotX = 0.22;
-    let rotY = 0;
-    let velX = 0;
-    let velY = 0.0035;
-    let isDragging = false;
-    let lastMouseX = 0;
-    let lastMouseY = 0;
-    let isVisible = true;
-
-    // Intersection Observer to save GPU/CPU when off-screen
-    if ('IntersectionObserver' in window) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          isVisible = entry.isIntersecting;
-        });
-      }, { threshold: 0.05 });
-      observer.observe(canvas);
+    if (window.ResizeObserver) {
+      const ro = new ResizeObserver(() => resize());
+      if (canvas.parentElement) ro.observe(canvas.parentElement);
+      ro.observe(canvas);
     }
 
     // Mouse drag
@@ -522,7 +522,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let time = 0;
     function render() {
       requestAnimationFrame(render);
-      if (!isVisible) return;
+
+      if (width <= 10 || height <= 10 || radius <= 10) {
+        if (!resize()) return;
+      }
 
       time += 0.02;
 
